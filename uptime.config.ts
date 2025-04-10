@@ -1,18 +1,18 @@
 const pageConfig = {
   // Title for your status page
-  title: "lyc8503's Status Page",
+  title: "Aer Group Status Page",
   // Links shown at the header of your status page, could set `highlight` to `true`
   links: [
-    { link: 'https://github.com/lyc8503', label: 'GitHub' },
-    { link: 'https://blog.lyc8503.net/', label: 'Blog' },
-    { link: 'mailto:me@lyc8503.net', label: 'Email Me', highlight: true },
+    //{ link: 'https://github.com/lyc8503', label: 'GitHub' },
+    //{ link: 'https://blog.lyc8503.net/', label: 'Blog' },
+    //{ link: 'mailto:me@lyc8503.net', label: 'Email Me', highlight: true },
   ],
   // [OPTIONAL] Group your monitors
   // If not specified, all monitors will be shown in a single list
   // If specified, monitors will be grouped and ordered, not-listed monitors will be invisble (but still monitored)
   group: {
-    "🌐 Public (example group name)": ['foo_monitor', 'bar_monitor', 'more monitor ids...'],
-    "🔐 Private": ['test_tcp_monitor'],
+    "🌐 Public": ['aerwsale_monitor','vapeinitaly_monitor'],
+    "🔐 Private": ['droship_monitor'],
   },
 }
 
@@ -28,6 +28,18 @@ const workerConfig = {
       name: 'Aer-Wsale Monitor',
       method: 'GET',
       target: 'https://aer-wsale.com'
+    },
+    {
+      id: 'vapeinitaly_monitor',
+      name: 'Vapeinitaly Monitor',
+      method: 'GET',
+      target: 'https://vapeinitaly.com'
+    },
+    {
+      id: 'droship_monitor',
+      name: 'DropShip API',
+      method: 'GET',
+      target: 'https://aer-wsale.com/ws?action=apitest'
     },
     // Example HTTP Monitor
     //{
