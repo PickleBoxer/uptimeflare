@@ -1,5 +1,5 @@
 import { workerConfig } from '../../uptime.config'
-import { formatStatusChangeNotification, getWorkerLocation, notifyWithApprise } from './util'
+import { formatStatusChangeNotification, getWorkerLocation, notifyWithApprise, notifyWithTeams } from './util'
 import { MonitorState, MonitorTarget } from '../../uptime.types'
 import { getStatus } from './monitor'
 import { DurableObject } from 'cloudflare:workers'
@@ -30,15 +30,17 @@ export default {
         return
       }
 
+      const notification = formatStatusChangeNotification(
+        monitor,
+        isUp,
+        timeIncidentStart,
+        timeNow,
+        reason,
+        workerConfig.notification?.timeZone ?? 'Etc/GMT'
+      )
+
+      // Send Apprise notification if configured
       if (workerConfig.notification?.appriseApiServer && workerConfig.notification?.recipientUrl) {
-        const notification = formatStatusChangeNotification(
-          monitor,
-          isUp,
-          timeIncidentStart,
-          timeNow,
-          reason,
-          workerConfig.notification?.timeZone ?? 'Etc/GMT'
-        )
         await notifyWithApprise(
           workerConfig.notification.appriseApiServer,
           workerConfig.notification.recipientUrl,
@@ -47,6 +49,16 @@ export default {
         )
       } else {
         console.log(`Apprise API server or recipient URL not set, skipping apprise notification for ${monitor.name}`)
+      }
+
+      // Send Teams notification if configured
+      if (workerConfig.notification?.teamsWebhookUrl) {
+        await notifyWithTeams(
+          workerConfig.notification.teamsWebhookUrl,
+          notification // Pass the whole notification object
+        )
+      } else {
+        console.log(`Teams webhook URL not set, skipping Teams notification for ${monitor.name}`)
       }
     }
 

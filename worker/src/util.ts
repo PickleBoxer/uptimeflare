@@ -1,3 +1,5 @@
+import type { TeamsNotification } from '../../uptime.types'
+
 async function getWorkerLocation() {
   const res = await fetch('https://cloudflare.com/cdn-cgi/trace')
   const text = await res.text()
@@ -51,16 +53,28 @@ function formatStatusChangeNotification(
     return {
       title: `✅ ${monitor.name} is up!`,
       body: `The service is up again after being down for ${downtimeDuration} minutes.`,
+      monitorName: monitor.name,
+      status: "Up",
+      downtimeDuration: `${downtimeDuration} minutes`,
+      reason: "OK"
     }
   } else if (timeNow == timeIncidentStart) {
     return {
       title: `🔴 ${monitor.name} is currently down.`,
       body: `Service is unavailable at ${timeNowFormatted}. Issue: ${reason || 'unspecified'}`,
+      monitorName: monitor.name,
+      status: "Down",
+      downtimeDuration: `0 minutes`,
+      reason: reason || 'unspecified'
     }
   } else {
     return {
       title: `🔴 ${monitor.name} is still down.`,
       body: `Service is unavailable since ${timeIncidentStartFormatted} (${downtimeDuration} minutes). Issue: ${reason || 'unspecified'}`,
+      monitorName: monitor.name,
+      status: "Down",
+      downtimeDuration: `${downtimeDuration} minutes`,
+      reason: reason || 'unspecified'
     }
   }
 }
@@ -97,4 +111,88 @@ async function notifyWithApprise(
   }
 }
 
-export { getWorkerLocation, fetchTimeout, withTimeout, notifyWithApprise, formatStatusChangeNotification }
+/*
+Adaptive Card Schema Reference:
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "${title}",
+      "weight": "bolder",
+      "size": "large",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "${text}",
+      "wrap": true,
+      "spacing": "medium"
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        {
+          "title": "Monitor:",
+          "value": "${monitorName}"
+        },
+        {
+          "title": "Status:",
+          "value": "${status}"
+        },
+        {
+          "title": "Downtime:",
+          "value": "${downtimeDuration}"
+        },
+        {
+          "title": "Reason:",
+          "value": "${reason}"
+        }
+      ]
+    }
+  ]
+}
+*/
+
+/**
+ * Send a notification to Microsoft Teams via webhook
+ * @param webhookUrl - The Teams webhook URL to send the notification to
+ * @param notification - The notification object containing the title, body, and other details
+ */	
+async function notifyWithTeams(
+  webhookUrl: string,
+  notification: TeamsNotification
+) {
+  console.log('Sending Teams notification (raw JSON): ' + notification.title + '-' + notification.body + ' to ' + webhookUrl)
+  try {
+    // Send the notification object as JSON, mapping 'body' to 'text'
+    const payload = {
+      title: notification.title,
+      text: notification.body,
+      monitorName: notification.monitorName,
+      status: notification.status,
+      downtimeDuration: notification.downtimeDuration,
+      reason: notification.reason
+    }
+
+    const resp = await fetchTimeout(webhookUrl, 5000, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!resp.ok) {
+      console.log('Error calling Teams webhook, status: ' + resp.status + ', response: ' + await resp.text())
+    } else {
+      console.log('Teams notification sent successfully, status: ' + resp.status)
+    }
+  } catch (e) {
+    console.log('Error calling Teams webhook: ' + e)
+  }
+}
+
+export { getWorkerLocation, fetchTimeout, withTimeout, notifyWithApprise, notifyWithTeams, formatStatusChangeNotification }

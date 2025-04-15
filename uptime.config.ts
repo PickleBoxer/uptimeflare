@@ -89,22 +89,25 @@ const workerConfig = {
       //timeout: 5000,
     //},
   ],
-  //notification: {
+  notification: {
     // [Optional] apprise API server URL
     // if not specified, no notification will be sent
     // appriseApiServer: "https://apprise.example.com/notify",
     // [Optional] recipient URL for apprise, refer to https://github.com/caronc/apprise
     // if not specified, no notification will be sent
     // recipientUrl: "tgram://bottoken/ChatID",
+    // [Optional] Microsoft Teams webhook URL for sending notifications to Teams
+    // if not specified, no Teams notification will be sent
+    teamsWebhookUrl: "https://prod-162.westeurope.logic.azure.com:443/workflows/e2a2d3aaa748427fb7926d6c3b48b06f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wR5LJEjpckud4BngMKz35KZoeZTybqFNyah2IQKJmL0",
     // [Optional] timezone used in notification messages, default to "Etc/GMT"
-    // timeZone: "Asia/Shanghai",
+    timeZone: "Europe/Rome",
     // [Optional] grace period in minutes before sending a notification
     // notification will be sent only if the monitor is down for N continuous checks after the initial failure
     // if not specified, notification will be sent immediately
     // gracePeriod: 5,
     // [Optional] disable notification for monitors with specified ids
     // skipNotificationIds: ['foo_monitor', 'bar_monitor'],
-  //},
+  },
   callbacks: {
     onStatusChange: async (
       env: any,

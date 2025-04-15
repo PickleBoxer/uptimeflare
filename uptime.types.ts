@@ -48,4 +48,52 @@ type MonitorTarget = {
   responseForbiddenKeyword?: string
 }
 
-export type { MonitorState, MonitorTarget }
+type NotificationConfig = {
+  // Apprise configuration
+  appriseApiServer?: string
+  recipientUrl?: string
+  
+  // Microsoft Teams webhook configuration
+  teamsWebhookUrl?: string
+  
+  // General notification settings
+  timeZone?: string
+  gracePeriod?: number
+  skipNotificationIds?: string[]
+}
+
+// Extend WorkerConfig to include notification
+type WorkerConfig = {
+  kvWriteCooldownMinutes: number
+  passwordProtection?: string
+  monitors: MonitorTarget[]
+  notification?: NotificationConfig
+  callbacks: {
+    onStatusChange: (
+      env: any,
+      monitor: MonitorTarget,
+      isUp: boolean,
+      timeIncidentStart: number,
+      timeNow: number,
+      reason: string
+    ) => Promise<void>
+    onIncident: (
+      env: any,
+      monitor: MonitorTarget,
+      timeIncidentStart: number,
+      timeNow: number,
+      reason: string
+    ) => Promise<void>
+  }
+}
+
+type TeamsNotification = {
+  title: string
+  body: string
+  monitorName?: string
+  status?: string
+  downtimeDuration?: string
+  reason?: string
+}
+
+export type { MonitorState, MonitorTarget, NotificationConfig, WorkerConfig, TeamsNotification }
