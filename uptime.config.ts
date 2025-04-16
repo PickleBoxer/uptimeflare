@@ -11,7 +11,7 @@ const pageConfig = {
   // If not specified, all monitors will be shown in a single list
   // If specified, monitors will be grouped and ordered, not-listed monitors will be invisble (but still monitored)
   group: {
-    "🌐 Public": ['aerwsale_monitor','vapeinitaly_monitor'],
+    "🌐 Public": ['aerwsale_monitor','vapeinitaly_monitor','svapostore_monitor'],
     "🔐 Private": ['droship_monitor'],
   },
 }
@@ -34,6 +34,12 @@ const workerConfig = {
       name: 'Vapeinitaly Monitor',
       method: 'GET',
       target: 'https://vapeinitaly.com'
+    },
+    {
+      id: 'svapostore_monitor',
+      name: 'Svapostore Monitor',
+      method: 'GET',
+      target: 'https://www.svapostore.net/'
     },
     {
       id: 'droship_monitor',
