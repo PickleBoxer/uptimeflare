@@ -27,25 +27,29 @@ const workerConfig = {
       id: 'aerwsale_monitor',
       name: 'Aer-Wsale Monitor',
       method: 'GET',
-      target: 'https://aer-wsale.com'
+      target: 'https://aer-wsale.com',
+      statusPageLink: 'https://aer-wsale.com',
     },
     {
       id: 'vapeinitaly_monitor',
       name: 'Vapeinitaly Monitor',
       method: 'GET',
-      target: 'https://vapeinitaly.com'
+      target: 'https://vapeinitaly.com',
+      statusPageLink: 'https://vapeinitaly.com'
     },
     {
       id: 'svapostore_monitor',
       name: 'Svapostore Monitor',
       method: 'GET',
-      target: 'https://www.svapostore.net/'
+      target: 'https://www.svapostore.net/',
+      statusPageLink: 'https://www.svapostore.net/'
     },
     {
       id: 'droship_monitor',
       name: 'DropShip API',
       method: 'GET',
-      target: 'https://aer-wsale.com/ws?action=apitest'
+      target: 'https://aer-wsale.com/ws?action=apitest',
+      statusPageLink: 'https://aer-wsale.com/ws?action=apitest'
     },
     // Example HTTP Monitor
     //{
