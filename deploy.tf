@@ -16,6 +16,12 @@ variable "CLOUDFLARE_ACCOUNT_ID" {
   type = string
 }
 
+variable "TEAMS_WEBHOOK_URL" {
+  type        = string
+  description = "Microsoft Teams webhook URL for notifications"
+  sensitive   = true
+}
+
 resource "cloudflare_workers_kv_namespace" "uptimeflare_kv" {
   account_id = var.CLOUDFLARE_ACCOUNT_ID
   title      = "uptimeflare_kv"
@@ -31,6 +37,11 @@ resource "cloudflare_worker_script" "uptimeflare" {
   kv_namespace_binding {
     name         = "UPTIMEFLARE_STATE"
     namespace_id = cloudflare_workers_kv_namespace.uptimeflare_kv.id
+  }
+  
+  secret_text_binding {
+    name = "TEAMS_WEBHOOK_URL"
+    text = var.TEAMS_WEBHOOK_URL
   }
 }
 

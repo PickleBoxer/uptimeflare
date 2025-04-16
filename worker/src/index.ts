@@ -7,6 +7,7 @@ import { DurableObject } from 'cloudflare:workers'
 export interface Env {
   UPTIMEFLARE_STATE: KVNamespace
   REMOTE_CHECKER_DO: DurableObjectNamespace<RemoteChecker>
+  TEAMS_WEBHOOK_URL: string
 }
 
 export default {
@@ -52,13 +53,15 @@ export default {
       }
 
       // Send Teams notification if configured
-      if (workerConfig.notification?.teamsWebhookUrl) {
+      if (workerConfig.notification?.teamsEnabled && env.TEAMS_WEBHOOK_URL) {
         await notifyWithTeams(
-          workerConfig.notification.teamsWebhookUrl,
+          env.TEAMS_WEBHOOK_URL,
           notification // Pass the whole notification object
         )
+      } else if (workerConfig.notification?.teamsEnabled) {
+        console.log(`Teams notifications enabled in config but TEAMS_WEBHOOK_URL secret is not set, skipping Teams notification for ${monitor.name}`)
       } else {
-        console.log(`Teams webhook URL not set, skipping Teams notification for ${monitor.name}`)
+        console.log(`Teams notifications disabled in config, skipping Teams notification for ${monitor.name}`)
       }
     }
 

@@ -98,7 +98,9 @@ const workerConfig = {
     // recipientUrl: "tgram://bottoken/ChatID",
     // [Optional] Microsoft Teams webhook URL for sending notifications to Teams
     // if not specified, no Teams notification will be sent
-    teamsWebhookUrl: "https://prod-162.westeurope.logic.azure.com:443/workflows/e2a2d3aaa748427fb7926d6c3b48b06f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wR5LJEjpckud4BngMKz35KZoeZTybqFNyah2IQKJmL0",
+    // teamsWebhookUrl: "TEAMS_WEBHOOK_URL", // Now set as a secret in Github Actions
+    // [Optional] Enable/disable Teams notifications (requires TEAMS_WEBHOOK_URL secret to be set)
+    teamsEnabled: true,
     // [Optional] timezone used in notification messages, default to "Etc/GMT"
     timeZone: "Europe/Rome",
     // [Optional] grace period in minutes before sending a notification

@@ -111,51 +111,6 @@ async function notifyWithApprise(
   }
 }
 
-/*
-Adaptive Card Schema Reference:
-{
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "type": "AdaptiveCard",
-  "version": "1.5",
-  "body": [
-    {
-      "type": "TextBlock",
-      "text": "${title}",
-      "weight": "bolder",
-      "size": "large",
-      "wrap": true
-    },
-    {
-      "type": "TextBlock",
-      "text": "${text}",
-      "wrap": true,
-      "spacing": "medium"
-    },
-    {
-      "type": "FactSet",
-      "facts": [
-        {
-          "title": "Monitor:",
-          "value": "${monitorName}"
-        },
-        {
-          "title": "Status:",
-          "value": "${status}"
-        },
-        {
-          "title": "Downtime:",
-          "value": "${downtimeDuration}"
-        },
-        {
-          "title": "Reason:",
-          "value": "${reason}"
-        }
-      ]
-    }
-  ]
-}
-*/
-
 /**
  * Send a notification to Microsoft Teams via webhook
  * @param webhookUrl - The Teams webhook URL to send the notification to
@@ -167,15 +122,50 @@ async function notifyWithTeams(
 ) {
   console.log('Sending Teams notification (raw JSON): ' + notification.title + '-' + notification.body + ' to ' + webhookUrl)
   try {
-    // Send the notification object as JSON, mapping 'body' to 'text'
+    // Build Adaptive Card payload
     const payload = {
-      title: notification.title,
-      text: notification.body,
-      monitorName: notification.monitorName,
-      status: notification.status,
-      downtimeDuration: notification.downtimeDuration,
-      reason: notification.reason
-    }
+      content: {
+        $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
+        type: "AdaptiveCard",
+        version: "1.5",
+        body: [
+          {
+            type: "TextBlock",
+            text: notification.title,
+            weight: "bolder",
+            size: "large",
+            wrap: true
+          },
+          {
+            type: "TextBlock",
+            text: notification.body,
+            wrap: true,
+            spacing: "medium"
+          },
+          {
+            type: "FactSet",
+            facts: [
+              {
+                title: "Monitor:",
+                value: notification.monitorName
+              },
+              {
+                title: "Status:",
+                value: notification.status
+              },
+              {
+                title: "Downtime:",
+                value: notification.downtimeDuration
+              },
+              {
+                title: "Reason:",
+                value: notification.reason
+              }
+            ]
+          }
+        ]
+      }
+    };
 
     const resp = await fetchTimeout(webhookUrl, 5000, {
       method: 'POST',
