@@ -58,3 +58,25 @@ Please refer to [Wiki](https://github.com/lyc8503/UptimeFlare/wiki)
 - [ ] Compatibility date update
 - [ ] Update wiki and add docs for dev
 - [ ] Cloudflare D1 database
+
+## 🆕 New Feature: Microsoft Teams Notifications
+
+### Setup Instructions
+
+1. **Save the Webhook URL to GitHub Secrets**:
+   - Navigate to your repository on GitHub.
+   - Go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
+   - Add a new secret with the name `TEAMS_WEBHOOK_URL` and paste the webhook URL as the value.
+
+2. **Enable Teams Notifications in Configuration**:
+   - Open the `uptime.config.ts` file.
+   - Set `teamsEnabled: true` under the `notification` section.
+
+### Example Configuration
+```typescript
+notification: {
+  teamsEnabled: true,
+}
+```
+
+---
